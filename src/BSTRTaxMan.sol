@@ -44,6 +44,10 @@ contract BSTRTaxMan is ReentrancyGuard {
         taxWalletSecondary = _to;
     }
 
+    function OWNER_rescueTokens(IERC20 _token) onlyBstrOwner external {
+        _token.transfer(msg.sender, _token.balanceOf(address(this)));
+    }
+
     function _bstrOwner() private view returns (address bstrOwner_) {
         return Ownable(address(BSTR)).owner();
     }

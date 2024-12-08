@@ -125,6 +125,10 @@ As Presented By:
         }
     }
 
+    function OWNER_rescueTokens(IERC20 _token) onlyOwner external {
+        _token.transfer(msg.sender, _token.balanceOf(address(this)));
+    }
+
     function _revertIfStandardWalletAndOverMaxHolding(
         address wallet
     ) internal view {
