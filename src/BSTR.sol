@@ -7,7 +7,8 @@ import {ERC20Burnable} from "@openzeppelin/contracts/token/ERC20/extensions/ERC2
 import {ERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {BSTRTaxMan} from "./BSTRTaxMan.sol";
-import "./interfaces/IAmmFactory.sol";/*
+import "./interfaces/IAmmFactory.sol";
+import "./interfaces/IAmmRouter02.sol";/*
 
 ╔══════════════════════════════════════════════════════╗
 ║░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░║
@@ -44,23 +45,24 @@ As Presented By:
     address immutable wethPairV2;
 
 
+
     error OverMax(uint256 amount, uint256 max);
 
-    constructor()
+    constructor(address _owner, address _taxWalletSecondary, IAmmFactory _factory, IAmmRouter02 _router)
         ERC20("BASE Buster", "BSTR")
         ERC20Permit("BASE Buster")
-        Ownable(0xc1532B9eC061b2d824FF079A2B5B416A847357cc)
+        Ownable(_owner)
     {
-        bstrTaxMan = new BSTRTaxMan(IERC20(this));
+        bstrTaxMan = new BSTRTaxMan(IERC20(this),_router,_taxWalletSecondary);
 
         isExempt[address(bstrTaxMan)] = true;
         isExempt[address(bstrTaxMan.taxWalletSecondary())] = true;
         isExempt[owner()] = true;
         isExempt[msg.sender] = true;
 
-        wethPairV2 = IAmmFactory(0x8909Dc15e40173Ff4699343b6eB8132c65e18eC6).createPair(
+        wethPairV2 = _factory.createPair(
             address(this),
-            address(0x4200000000000000000000000000000000000006) //BASE weth
+            _router.WETH()
         );
 
         _mint(owner(),1_000_000_000 ether);

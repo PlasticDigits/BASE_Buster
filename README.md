@@ -1,3 +1,9 @@
+## deployment
+
+Key variables are set in the script, and should be updated correctly for the network.
+
+forge script script/deploy_BSTR.s.sol:deploy_BSTR --broadcast --verify -vvv --rpc-url $RPC_URL --etherscan-api-key $ETHERSCAN_API_KEY -i 1 --sender $DEPLOYER_ADDRESS
+
 ## Foundry
 
 **Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**

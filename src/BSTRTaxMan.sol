@@ -8,10 +8,9 @@ import "./interfaces/IAmmRouter02.sol";
 //The tax man cometh for us all
 
 contract BSTRTaxMan is ReentrancyGuard {
-    address public taxWalletSecondary = 0x24ABA1071e2D7878120CF471C4267e97687D5Ab4;
+    address public taxWalletSecondary;
     IERC20 immutable BSTR;
-    IAmmRouter02 public router =
-        IAmmRouter02(0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24); //BASE v2
+    IAmmRouter02 immutable router;
 
     modifier onlyBstrOwner() {
         if(
@@ -22,9 +21,10 @@ contract BSTRTaxMan is ReentrancyGuard {
         _;
     }
 
-    constructor(IERC20 _bstr) {
+    constructor(IERC20 _bstr, IAmmRouter02 _router, address _taxWalletSecondary) {
         BSTR = _bstr;
-        BSTR.approve(address(router), type(uint256).max);
+        router = _router;
+        taxWalletSecondary = _taxWalletSecondary;
     }
 
     function sendTaxes() external nonReentrant {
